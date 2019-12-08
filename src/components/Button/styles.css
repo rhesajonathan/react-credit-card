@@ -1,0 +1,23 @@
+.button-component{
+    border-style: none;
+    background-color: coral;
+    font-size: larger;
+    margin:20px 0px 0px;
+    padding: 10px;
+    border-radius:5px;
+    width:100%;
+    text-align: center;
+    color: white;
+}
+
+.button-component:active{
+    /* background-color: tomato; */
+    -webkit-box-shadow: inset 0px 0px 21px -8px rgba(0,0,0,0.47);
+    -moz-box-shadow: inset 0px 0px 21px -8px rgba(0,0,0,0.47);
+    box-shadow: inset 0px 0px 21px -8px rgba(0,0,0,0.47);
+    
+}
+
+button:focus {
+    outline:0;
+}
