@@ -1,9 +1,10 @@
 import React from 'react';
 import './styles.css'
-function Button(){
+function Button({onClick,disabled = false}){
+    console.log(disabled)
     return(
         <>
-            <button className="button-component">Submit</button>
+            <button className="button-component" onClick={onClick} disabled={!disabled}>Submit</button>
         </>
     )
 }

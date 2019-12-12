@@ -8,41 +8,114 @@ class App extends React.Component{
   constructor(props){
     super(props);
     this.state = {
-      creditCardNumber : '',
-      creditCardOwner : '',
-      creditCardExpired : '',
-      creditCardCvv : '',
-      isRotate : false
+      creditCardNumber : {
+        value : '',
+        isValid : true,
+        invalidReason : ''
+      },
+      creditCardOwner : {
+        value : '',
+        isValid : true,
+        invalidReason : ''
+      },
+      creditCardExpired : {
+        value : '',
+        isValid : true,
+        invalidReason : ''
+      },
+      creditCardCvv : {
+        value : '',
+        isValid : true,
+        invalidReason : ''
+      },
+      isRotate : false,
+      isComplete : false
     };
   }
 
+  isInputValid = () => {
+    let tempState = this.state;
+
+    for(var prop in tempState){
+      if(typeof tempState[prop] === 'object' && tempState[prop] !== null && tempState[prop].value === ""){
+       return false;
+      }
+    }
+
+    return true;
+  }
+
   handleInput = (event) =>{
-    console.log(event.target.name);
-    console.log(event.target.value);
-    
-    this.setState({[event.target.name]:event.target.value},()=>console.log(this.state));
-    
+
+    let targetName = event.target.name;
+    if(targetName == 'creditCardNumber'){
+      this.handleCreditCardNumber(event);
+    }
+    else if(targetName == 'creditCardOwner'){
+      this.handleCreditCardOwner(event);
+    }
+    else if(targetName == 'creditCardExpired'){
+      this.handleCreditCardExpired(event);
+    }
+    else if(targetName == 'creditCardCvv'){
+      this.handleCreditCardCvv(event);
+    }
+
+    if(this.isInputValid()){
+      this.setState({isComplete : true});
+    }
+    else 
+    {
+      this.setState({isComplete : false});
+    }
   }
 
   handleCreditCardNumber = (event) =>{
     let creditCardNumber = event.target.value;
-    
-    console.log(creditCardNumber)
     if((/^[\d\s]+$/.test(creditCardNumber) && creditCardNumber.length < 20 )|| creditCardNumber === '' ){
       let creditCardNumberArray = creditCardNumber.split(" ");
       let lastArray = creditCardNumberArray[creditCardNumberArray.length-1]
 
-      let isNotBackSpace = (creditCardNumber.length - this.state.creditCardNumber.length) > 0
+      let isNotBackSpace = (creditCardNumber.length - this.state.creditCardNumber.value.length) > 0
 
+      let validCardNumber = true;
+      if((creditCardNumber.charAt(0) !== "4" && creditCardNumber.charAt(0) !== "5")){
+        validCardNumber = false;
+      }
+     
       if(lastArray.length === 4 && creditCardNumberArray.length !== 4 && isNotBackSpace){
 
         let creditCardNumberSpace = creditCardNumber+" ";
-        this.setState({[event.target.name]:creditCardNumberSpace},()=>console.log(this.state));
+        this.setState({[event.target.name]:{
+          value: creditCardNumberSpace,
+          isValid:true,
+          invalidReason:""
+        }},()=>console.log(this.state));
+
+        if(!validCardNumber){
+          this.setState({[event.target.name]:{
+            value: creditCardNumberSpace,
+            isValid:false,
+            invalidReason:"Credit card number is not recognized"
+          }});
+        }
 
       }
       else{
 
-        this.setState({[event.target.name]:creditCardNumber},()=>console.log(this.state));
+        this.setState({[event.target.name]:{
+          value: creditCardNumber,
+          isValid:true,
+          invalidReason:""
+        }},()=>console.log(this.state));
+
+        if(!validCardNumber){
+          this.setState({[event.target.name]:{
+            value: creditCardNumber,
+            isValid:false,
+            invalidReason:"Credit card number is not recognized"
+          }});
+        }
 
       }
     }
@@ -58,7 +131,10 @@ class App extends React.Component{
       .map((s) => s.charAt(0).toUpperCase() + s.substring(1))
       .join(' ');
 
-      this.setState({[event.target.name]:creditCardOwner},()=>console.log(this.state));
+      this.setState({[event.target.name]:{
+        ...this.state.creditCardOwner,
+        value:creditCardOwner
+      }},()=>console.log(this.state));
     }
 
   }
@@ -72,57 +148,64 @@ class App extends React.Component{
       let isMonth = false;
       let isYear = true;
 
-      if(creditCardExpired[0] == 0){
+      if(length >= 2){
+        console.log(parseInt(creditCardExpired))
 
-        isMonth = true;
+        if(length === 3 && creditCardExpired[2] !== '/'){
+          creditCardExpired = creditCardExpired.substring(0,2) + '/' + creditCardExpired.substring(2);
+        }
 
-        if(length == 2){
-          if(!/^[1-9]$/.test(creditCardExpired[1])){
-            isMonth = false;
+        let today = new Date();
+        let month = today.getMonth();
+        let year = today.getFullYear();
+        let expiredMonth = creditCardExpired.substring(0,2);
+        let currentYear = year.toString()[2]+year.toString()[3];
+        let expiredYear = creditCardExpired.substring(3);
+
+
+        if(parseInt(expiredMonth) > 12 || parseInt(expiredMonth) <= 0){
+
+          this.setState({[event.target.name]:{
+            value: creditCardExpired,
+            isValid:false,
+            invalidReason:"Expired month is invalid"
+          }});
+          return ;
+        }
+  
+        if(length == 5){
+          if(parseInt(expiredYear) < parseInt(currentYear)){
+            this.setState({[event.target.name]:{
+              value: creditCardExpired,
+              isValid:false,
+              invalidReason:"Card already expired"
+            }});
+            return;
+          }
+          else if(expiredYear === currentYear){
+            if(month >= expiredMonth){
+              this.setState({[event.target.name]:{
+                value: creditCardExpired,
+                isValid:false,
+                invalidReason:"Card already expired"
+              }});
+              return;
+            }
           }
         }
-      }
-      else if(creditCardExpired[0] == 1){
-
-        isMonth = true;
-
-        if(length == 2){
-          if(!/^[0-2]$/.test(creditCardExpired[1])){
-            isMonth = false;
-          }
-        }
-      }
-      else if(creditCardExpired == ''){
-        isMonth = true;
-      }
-
-
-
-      if(creditCardExpired.length === 3 && creditCardExpired[2] !== '/'){
-        creditCardExpired = creditCardExpired.substring(0,2) + '/' + creditCardExpired.substring(2);
-      }
-
-      var today = new Date();
-      var year = today.getFullYear();
-
-
-
-      let isNotBackSpace = (creditCardExpired.length - this.state.creditCardExpired.length) > 0
-
-      if(length > 2 && isNotBackSpace){
         
-        if(creditCardExpired[3] < year.toString()[2]){
-
-          isYear = false;
-        }
-        
-        if(creditCardExpired[4] <= year.toString()[3] && creditCardExpired[3] == year.toString()[2]){
-          isYear = false;
-        }
+        this.setState({[event.target.name]:{
+          value:creditCardExpired,
+          isValid:true,
+          invalidReason:""
+        }},()=>console.log(this.state));
       }
-
-      if(isMonth && isYear){
-        this.setState({[event.target.name]:creditCardExpired},()=>console.log(this.state));
+      else
+      {
+        this.setState({[event.target.name]:{
+          ...this.state.creditCardExpired,
+          value:creditCardExpired
+        }},()=>console.log(this.state));
       }
     }
 
@@ -134,39 +217,60 @@ class App extends React.Component{
     if(/^[\d]{0,3}$/.test(creditCardCvv)){
       
 
-      this.setState({[event.target.name]:creditCardCvv},()=>console.log(this.state));
+      this.setState({[event.target.name]:{
+        ...this.state.creditCardCvv,
+        value:creditCardCvv
+      }},()=>console.log(this.state));
     }
 
   }
 
   handleCvvFocus = (event) => {
     let inputName = event.target.name
-
-    
-
     inputName === "creditCardCvv"?this.setState({isRotate:true}):this.setState({isRotate:false});
 
+  }
+
+  handleSubmitButton = () => {
+
+    let tempState = this.state;
+
+    for(var prop in tempState){
+      if(typeof tempState[prop] === 'object' && tempState[prop] !== null){
+        tempState[prop] = {
+          value : '',
+          isValid : true,
+          invalidReason : ''
+        }
+      }
+      else{
+        tempState[prop] = false;
+      }
+    }
+    this.setState({...tempState});
   }
 
 
   render(){
     return (
       <div className="App">
-        <CreditCard number={this.state.creditCardNumber} owner={this.state.creditCardOwner} expired={this.state.creditCardExpired} cvv={this.state.creditCardCvv} rotate={this.state.isRotate}/>
-        <div className="content">
-            <div className="row">
-              <TextInput type="text" name ="creditCardNumber" placeholder="Credit Card Number"  size="33" onChange={this.handleCreditCardNumber} value={this.state.creditCardNumber} onFocus={this.handleCvvFocus}/>
-            </div>
-            <div className="row">
-              <TextInput type="text" name ="creditCardOwner" placeholder="John Doe" size="33" value={this.state.creditCardOwner} onChange={this.handleCreditCardOwner} onFocus={this.handleCvvFocus}/>
-            </div>
-            <div className="row">
-              <TextInput type="text" name ="creditCardExpired" placeholder="20/20" size="15" value={this.state.creditCardExpired} onChange={this.handleCreditCardExpired} onFocus={this.handleCvvFocus}/>
-              <TextInput type="number"  name ="creditCardCvv" placeholder="CVV" size="13" value={this.state.creditCardCvv} onChange={this.handleCreditCardCvv} onFocus={this.handleCvvFocus}/>
-            </div>
-            <div className="row">
-              <Button/>
-            </div>
+        <div>
+          <CreditCard number={this.state.creditCardNumber.value} owner={this.state.creditCardOwner.value} expired={this.state.creditCardExpired.value} cvv={this.state.creditCardCvv.value} rotate={this.state.isRotate}/>
+          <div className="content">
+              <div className="row">
+                <TextInput type="text" name ="creditCardNumber" placeholder="Credit Card Number"  size="33" onChange={this.handleInput} value={this.state.creditCardNumber.value} onFocus={this.handleCvvFocus} isValid = {this.state.creditCardNumber.isValid} invalidReason = {this.state.creditCardNumber.invalidReason}/>
+              </div>
+              <div className="row">
+                <TextInput type="text" name ="creditCardOwner" placeholder="John Doe" size="33" value={this.state.creditCardOwner.value} onChange={this.handleInput} onFocus={this.handleCvvFocus} isValid = {this.state.creditCardOwner.isValid} invalidReason = {this.state.creditCardOwner.invalidReason}/>
+              </div>
+              <div className="row">
+                <TextInput type="text" name ="creditCardExpired" placeholder="20/20" size="15" value={this.state.creditCardExpired.value} onChange={this.handleInput} onFocus={this.handleCvvFocus} isValid = {this.state.creditCardExpired.isValid} invalidReason = {this.state.creditCardExpired.invalidReason}/>
+                <TextInput type="number"  name ="creditCardCvv" placeholder="CVV" size="13" value={this.state.creditCardCvv.value} onChange={this.handleInput} onFocus={this.handleCvvFocus}isValid = {this.state.creditCardCvv.isValid} invalidReason = {this.state.creditCardCvv.invalidReason}/>
+              </div>
+              <div className="row">
+                <Button onClick = {this.handleSubmitButton} disabled = {this.state.isComplete}/>
+              </div>
+          </div>
         </div>
       </div>
     )

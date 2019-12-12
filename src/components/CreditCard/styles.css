@@ -3,10 +3,8 @@
 .credit-card-container{
     width:350px;
     height:220px;
-    position: absolute;
-    top:180px;
+    position: relative;
     z-index: 2;
-    
 }
 
 .credit-card-inner{
@@ -16,10 +14,6 @@
     text-align: center;
     transition: transform 0.8s;
     transform-style: preserve-3d;
-}
-
-.credit-card-container:hover .credit-card-inner{
-    transform: rotateY(180deg);
 }
 
 .credit-card-container-front, .credit-card-container-back {
@@ -57,13 +51,12 @@
 
 .credit-card-logo{
     align-self: flex-end;
-    flex-grow: 6;
+    height: 100px;
 }
 
 .credit-card-logo img{
     width: 70px;
     position: relative;
-    top: -20px;
     right: -10px;
 }
 
@@ -78,6 +71,20 @@
     flex-direction: row;
     flex-grow: 1;
     width: 100%;
+    font-size: 21px;
+    align-items: center;
+}
+
+.credit-card-expired{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.credit-card-expired > div{
+    text-align: left;
+    font-size: 8px;
+    margin-right: 5px;
 }
 
 .credit-card-magnetic-stripe{

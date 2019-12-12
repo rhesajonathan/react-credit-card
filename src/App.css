@@ -13,6 +13,14 @@
   
 }
 
+.App > div {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
 .content{
   background-color: white;
   width:450px;
@@ -20,8 +28,8 @@
   border-radius: 5px;
   padding: 80px 20px 0px;
   position: relative;
-  top: 80px;
   z-index: 1;
+  margin-top: -50px;
 }
 
 .row{

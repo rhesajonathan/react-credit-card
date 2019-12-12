@@ -3,6 +3,30 @@
     padding:12px 14px 12px;
     font-size: 19px;
     border-style:none;
-    margin:20px 0px 0px;
+    margin:10px 0px 0px;
     border: 1px solid lightgray;
+}
+
+.text-input:focus{
+    border-radius: 5px;
+    border-color: coral;
+    outline: none !important;
+}
+
+.text-input-invalid{
+    border-color: red;
+
+}
+
+.input-container{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+
+}
+
+.invalid-text{
+    color:red;
+    font-size: 12px;
+    height: 12px;
 }

@@ -8,14 +8,26 @@ function formatCreditCardNumber(number){
   return number + template.substring(length);
 }
 
-function CreditCard({number,owner,expired,cvv,rotate}){
+function renderLogo(creditCardNumber){
+
+  let firstDigit = creditCardNumber.charAt(0);
+
+  if(firstDigit === "4"){
+    return <img src="http://www.pngall.com/wp-content/uploads/2017/05/Visa-Logo-PNG-Image.png"  alt="Visa logo vector download" />;
+  }
+  else if(firstDigit === "5"){
+    return <img src="https://brand.mastercard.com/content/dam/mccom/brandcenter/thumbnails/mastercard_circles_92px_2x.png"/>
+  }
+}
+
+function CreditCard({number = "0000 0000 0000 0000",owner = "John Doe",expired = "20/20",cvv = "123",rotate = false}){
     let styleRotate = rotate == true?{transform: 'rotateY(180deg)'}:{};
     return(
         <div className="credit-card-container">
           <div className="credit-card-inner" style={styleRotate}>
             <div className="credit-card-container-front">
               <div className="credit-card-logo">
-                <img src="https://seeklogo.net/wp-content/uploads/2016/11/visa-logo-preview-400x400.png"  alt="Visa logo vector download" />
+                {renderLogo(number)}
               </div>
               <div className="credit-card-number">
                     {formatCreditCardNumber(number)}
@@ -25,6 +37,11 @@ function CreditCard({number,owner,expired,cvv,rotate}){
                     {owner == ''?'John Doe':owner}
                 </div>
                 <div className="credit-card-expired">
+                    <div>
+                      VALID
+                      <br/>
+                      THRU
+                    </div>
                     {expired == ''?'20/20':expired}
                 </div>
               </div>
@@ -39,7 +56,7 @@ function CreditCard({number,owner,expired,cvv,rotate}){
                     
                 </div>
                 <div className="credit-card-cvv">
-                    {cvv == ''?'123':cvv}
+                    {cvv == ''?'XXX':cvv}
                 </div>
               </div>
             </div>
