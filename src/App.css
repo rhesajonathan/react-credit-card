@@ -2,7 +2,7 @@
 
 .App {
   text-align: center;
-  background-color: #07407b;
+  /* background-color: #07407b; */
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -10,6 +10,10 @@
   justify-content: center;
   color: white;
   font-family: 'Open Sans', sans-serif;
+  background: #085078;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to top, #85D8CE, #085078);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to top, #85D8CE, #085078); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  
   
 }
 
@@ -30,6 +34,9 @@
   position: relative;
   z-index: 1;
   margin-top: -50px;
+  -webkit-box-shadow: -1px 17px 17px -3px rgba(0,0,0,0.29);
+  -moz-box-shadow: -1px 17px 17px -3px rgba(0,0,0,0.29);
+  box-shadow: -1px 17px 17px -3px rgba(0,0,0,0.29);
 }
 
 .row{

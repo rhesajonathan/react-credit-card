@@ -132,8 +132,9 @@ class App extends React.Component{
       .join(' ');
 
       this.setState({[event.target.name]:{
-        ...this.state.creditCardOwner,
-        value:creditCardOwner
+        value:creditCardOwner,
+        isValid:true,
+        invalidReason:""
       }},()=>console.log(this.state));
     }
 
@@ -250,6 +251,17 @@ class App extends React.Component{
     this.setState({...tempState});
   }
 
+  handleOnBlur = (event) => {
+
+    if(this.state[event.target.name].value === ""){
+      this.setState({[event.target.name]:{
+        ...this.state[event.target.name],
+        isValid: false,
+        invalidReason: "Can't be empty"
+      }},() => console.log(this.state));
+    }
+  }
+
 
   render(){
     return (
@@ -258,14 +270,14 @@ class App extends React.Component{
           <CreditCard number={this.state.creditCardNumber.value} owner={this.state.creditCardOwner.value} expired={this.state.creditCardExpired.value} cvv={this.state.creditCardCvv.value} rotate={this.state.isRotate}/>
           <div className="content">
               <div className="row">
-                <TextInput type="text" name ="creditCardNumber" placeholder="Credit Card Number"  size="33" onChange={this.handleInput} value={this.state.creditCardNumber.value} onFocus={this.handleCvvFocus} isValid = {this.state.creditCardNumber.isValid} invalidReason = {this.state.creditCardNumber.invalidReason}/>
+                <TextInput type="text" name ="creditCardNumber" placeholder="Credit Card Number"  size="33" onChange={this.handleInput} value={this.state.creditCardNumber.value} onFocus={this.handleCvvFocus} onBlur={this.handleOnBlur} isValid = {this.state.creditCardNumber.isValid} invalidReason = {this.state.creditCardNumber.invalidReason}/>
               </div>
               <div className="row">
-                <TextInput type="text" name ="creditCardOwner" placeholder="John Doe" size="33" value={this.state.creditCardOwner.value} onChange={this.handleInput} onFocus={this.handleCvvFocus} isValid = {this.state.creditCardOwner.isValid} invalidReason = {this.state.creditCardOwner.invalidReason}/>
+                <TextInput type="text" name ="creditCardOwner" placeholder="John Doe" size="33" value={this.state.creditCardOwner.value} onChange={this.handleInput} onFocus={this.handleCvvFocus} onBlur={this.handleOnBlur} isValid = {this.state.creditCardOwner.isValid} invalidReason = {this.state.creditCardOwner.invalidReason}/>
               </div>
               <div className="row">
-                <TextInput type="text" name ="creditCardExpired" placeholder="20/20" size="15" value={this.state.creditCardExpired.value} onChange={this.handleInput} onFocus={this.handleCvvFocus} isValid = {this.state.creditCardExpired.isValid} invalidReason = {this.state.creditCardExpired.invalidReason}/>
-                <TextInput type="number"  name ="creditCardCvv" placeholder="CVV" size="13" value={this.state.creditCardCvv.value} onChange={this.handleInput} onFocus={this.handleCvvFocus}isValid = {this.state.creditCardCvv.isValid} invalidReason = {this.state.creditCardCvv.invalidReason}/>
+                <TextInput type="text" name ="creditCardExpired" placeholder="20/20" size="15" value={this.state.creditCardExpired.value} onChange={this.handleInput} onFocus={this.handleCvvFocus} onBlur={this.handleOnBlur} isValid = {this.state.creditCardExpired.isValid} invalidReason = {this.state.creditCardExpired.invalidReason}/>
+                <TextInput type="number"  name ="creditCardCvv" placeholder="CVV" size="13" value={this.state.creditCardCvv.value} onChange={this.handleInput} onFocus={this.handleCvvFocus} onBlur={this.handleOnBlur} isValid = {this.state.creditCardCvv.isValid} invalidReason = {this.state.creditCardCvv.invalidReason}/>
               </div>
               <div className="row">
                 <Button onClick = {this.handleSubmitButton} disabled = {this.state.isComplete}/>
